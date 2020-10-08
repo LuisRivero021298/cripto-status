@@ -3,9 +3,7 @@ import router from "@/router";
 import App from "./App.vue";
 
 import "@/assets/css/tailwind.css";
-import { dollarFilter, percentFilter } from "@/filtres";
-
-//filter(`dollar`, dollarFilter);
+import { dollarFilter, percentFilter } from "@/filters";
 
 const app = createApp(App);
 app.config.globalProperties.$filters = {
