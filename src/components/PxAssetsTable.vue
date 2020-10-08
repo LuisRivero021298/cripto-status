@@ -7,8 +7,8 @@
           <span>Ranking</span>
         </th>
         <th>Nombre</th>
-        <th>Precio</th>
-        <th>Cap. de Mercado</th>
+        <th class="hidden md:table-cell">Precio</th>
+        <th class="hidden lg:table-cell">Cap. de Mercado</th>
         <th>Variación 24hs</th>
         <td class="hidden sm:block"></td>
       </tr>
@@ -19,13 +19,17 @@
       :key="a.id" 
       class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100">
         <td>
-          <img :src="`https://static.coincap.io/assets/icons/${a.symbol.toLowerCase()}@2x.png`" :alt="a.name"/>
+          <img class="w-8" :src="`https://static.coincap.io/assets/icons/${a.symbol.toLowerCase()}@2x.png`" :alt="a.name"/>
         </td>
-        <td>#{{a.rank}}</td>
-        <td>{{a.name}}</td>
-        <td>{{a.priceUsd}}</td>
-        <td>{{a.marketCapUsd}}</td>
-        <td>{{a.changePercent24Hr}}</td>
+        <td>
+          <b>#{{ a.rank }}</b>
+        </td>
+        <td>{{ a.name }}</td>
+        <td class="hidden md:table-cell">{{ $filters.dollarFilter(a.priceUsd) }}</td>
+        <td class="hidden lg:table-cell">{{ $filters.dollarFilter(a.marketCapUsd) }}</td>
+        <td :class="changePercentColor(a)">
+          {{ $filters.percentFilter(a.changePercent24Hr) }}
+        </td>
         <td class="hidden sm:block"></td>
       </tr>
     </tbody>
@@ -40,6 +44,14 @@ export default {
       type: Array,
       default: () => []
     }
+  },
+  methods: {
+    changePercentColor(a){
+      return {
+        'text-green-500' : a.changePercent24Hr > 0,
+        'text-red-500' : a.changePercent24Hr < 0
+      }
+    }  
   }
 };
 </script>
