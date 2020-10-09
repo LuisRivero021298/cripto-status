@@ -24,7 +24,7 @@
         <td>
           <b>#{{ a.rank }}</b>
         </td>
-        <td>{{ a.name }}</td>
+        <td><router-link :to="`/coin/${a.id}`">{{ a.name }}</router-link></td>
         <td class="hidden md:table-cell">{{ $filters.dollarFilter(a.priceUsd) }}</td>
         <td class="hidden lg:table-cell">{{ $filters.dollarFilter(a.marketCapUsd) }}</td>
         <td :class="changePercentColor(a)">
