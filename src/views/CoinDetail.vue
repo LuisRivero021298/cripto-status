@@ -59,11 +59,12 @@
                 id="convertValue"
                 type="number"
                 class="text-center bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
+                v-model="coinConverterValue"
               />
             </label>
           </div>
 
-          <span class="text-xl"></span>
+          <span class="text-xl" v-show="coinConverter">{{ $filters.dollarFilter(coinConverter) }} USD</span>
         </div>
       </div>
 
@@ -79,26 +80,31 @@
       <div>
         <h3 class="text-xl">Best offert change</h3>
         <table style="width: 90%; margin: 0 auto">
-          <tr v-for="m in markets" class="border-b" :key="`${m.exchangeId}-${m.priceUsd}`">
+          <tr
+            v-for="m in markets"
+            class="border-b"
+            :key="`${m.exchangeId}-${m.priceUsd}`"
+          >
             <td>
               <b>{{ m.exchangeId }}</b>
             </td>
             <td>{{ $filters.dollarFilter(m.priceUsd) }}</td>
-            <td>{{ m.baseSymbol }}/ {{ m.quoteSymbol  }}</td>
+            <td>{{ m.baseSymbol }}/ {{ m.quoteSymbol }}</td>
             <td>
               <px-button
-                v-show="!m.url" 
-                class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-2 border border-green-500 hover:border-transparent rounded" 
+                v-show="!m.url"
+                class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-2 border border-green-500 hover:border-transparent rounded"
                 @click="getUrl(m)"
               >
                 <span>Get Link</span>
               </px-button>
-              <a 
-                v-show="m.url" 
-                class="hover:underline text-green-600" 
+              <a
+                v-show="m.url"
+                class="hover:underline text-green-600"
                 target="_blanck"
-                :href="m.url"  
-              >{{m.url}}</a>
+                :href="m.url"
+                >{{ m.url }}</a
+              >
             </td>
           </tr>
         </table>
@@ -118,11 +124,12 @@ export default {
   components: {
     LineChart,
     PxButton,
-    PxBounceLoader
+    PxBounceLoader,
   },
   data() {
     return {
       isLoading: false,
+      coinConverterValue: 0,
       asset: {},
       history: [],
       markets: [],
@@ -133,6 +140,12 @@ export default {
     };
   },
   computed: {
+    coinConverter() {
+      if (this.coinConverterValue === 0){
+        return '';
+      }
+      return this.coinConverterValue * this.asset.priceUsd; 
+    },
     chartdata() {
       const data = [];
       this.history.map((h) => {
@@ -190,16 +203,20 @@ export default {
     async getListExchange(id) {
       try {
         const { data } = await api.getMarkets(id);
-        this.markets = data; 
-      } catch (err){ console.error(err);}
+        this.markets = data;
+      } catch (err) {
+        console.error(err);
+      }
     },
     async getUrl(exchange) {
       try {
-        const {data} = await api.getExchange(exchange.exchangeId);
+        const { data } = await api.getExchange(exchange.exchangeId);
         exchange.url = data.exchangeUrl;
         return exchange;
-      } catch (err){ console.error(err)}
-    }
+      } catch (err) {
+        console.error(err);
+      }
+    },
   },
 };
 </script>
