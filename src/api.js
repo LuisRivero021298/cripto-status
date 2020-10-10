@@ -12,4 +12,17 @@ async function getAsset(id) {
   return data;
 }
 
-export default { getAssets, getAsset };
+async function assetHistory(coin) {
+  const now = new Date();
+  const end = now.getTime();
+  now.setDate(now.getDate() - 1);
+  const start = now.getTime();
+
+  const resp = await fetch(
+    `${url}/assets/${coin}/history?interval=h1&start=${start}&end=${end}`
+  );
+  const data = resp.json();
+  return data;
+}
+
+export default { getAssets, getAsset, assetHistory };

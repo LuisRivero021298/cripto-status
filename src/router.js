@@ -12,14 +12,17 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      name: "home",
       component: Home,
     },
     {
       path: "/about",
+      name: "about",
       component: About,
     },
     {
       path: "/coin/:id",
+      name: "coin-detail",
       component: CoinDetail,
     },
     {

@@ -24,7 +24,13 @@
         <td>
           <b>#{{ a.rank }}</b>
         </td>
-        <td><router-link :to="`/coin/${a.id}`">{{ a.name }}</router-link></td>
+        <td>
+          <router-link 
+            :to="{ name: 'coin-detail', params: {id: a.id}}"
+            class="hover:underline text-green-900" 
+          >{{ a.name }}</router-link>
+          <small class="ml-1 text-gray-500">{{ a.symbol }}</small>
+        </td>
         <td class="hidden md:table-cell">{{ $filters.dollarFilter(a.priceUsd) }}</td>
         <td class="hidden lg:table-cell">{{ $filters.dollarFilter(a.marketCapUsd) }}</td>
         <td :class="changePercentColor(a)">

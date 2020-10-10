@@ -24,11 +24,12 @@
             </li>
             <li class="flex justify-between">
               <b class="text-gray-600 mr-10 uppercase">Precio actual</b>
-              <span>{{ $filters.dollarFilter(asset.priceUsd)   }}</span>
+              <span>{{ $filters.dollarFilter(asset.priceUsd) }}</span>
             </li>
             <li class="flex justify-between">
               <b class="text-gray-600 mr-10 uppercase">Precio más bajo</b>
-              <span>{{ $filters.dollarFilter(min) }}</span> </li>
+              <span>{{ $filters.dollarFilter(min) }}</span>
+            </li>
             <li class="flex justify-between">
               <b class="text-gray-600 mr-10 uppercase">Precio más alto</b>
               <span>{{ $filters.dollarFilter(max) }}</span>
@@ -47,7 +48,9 @@
         <div class="my-10 sm:mt-0 flex flex-col justify-center text-center">
           <button
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          >Cambiar</button>
+          >
+            Cambiar
+          </button>
 
           <div class="flex flex-row my-5">
             <label class="w-full" for="convertValue">
@@ -67,22 +70,53 @@
 </template>
 
 <script>
-import api from '@/api'
+import api from "@/api";
 
 export default {
-  name: 'CoinDetail',
-  data () {
+  name: "CoinDetail",
+  data() {
     return {
-      asset: {}
-    }
+      asset: {},
+      history: []
+    };
   },
-  async created(){
+  computed: {
+    min() {
+      return Math.min(
+        ...this.history.map(h => parseFloat(h.priceUsd).toFixed(2)) 
+      ); 
+    },
+    max() {
+      return Math.max(
+        ...this.history.map(h => parseFloat(h.priceUsd).toFixed(2)) 
+      );
+    },
+    avg() {
+      let subTotal = 0;
+
+      for(let i = 0; i < this.history.length; i++){
+        subTotal += parseFloat(this.history[i].priceUsd);
+      }
+      return (subTotal / this.history.length); 
+    },
+  },
+  async created() {
     const id = this.$route.params.id;
-    const {data} = await api.getAsset(id);
-    console.log(data);  
-    this.asset = data;
+    this.getCoin(id);
+    this.getAssetHistory(id);
+  },
+  methods: {
+    async getCoin(id) {
+      const { data } = await api.getAsset(id);
+      this.asset = data;
+    },
+    async getAssetHistory(id){
+      const { data } = await api.assetHistory(id); 
+      this.history = data;
+    }
+
   }
-}
+};
 </script>
 
 <style scoped>
@@ -91,4 +125,3 @@ td {
   text-align: center;
 }
 </style>
-
