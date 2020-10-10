@@ -1,8 +1,7 @@
 <template>
   <main>
     <px-header />
-
-    <router-view class="w-10/12 md:w-11/12 container px-5 sm:px-20 py-20 box-border"/>
+    <router-view class="w-10/12 md:w-11/12 container px-5 py-10 box-border flex justify-center"/>
   </main>
 </template>
 

@@ -36,15 +36,24 @@
         <td :class="changePercentColor(a)">
           {{ $filters.percentFilter(a.changePercent24Hr) }}
         </td>
-        <td class="hidden sm:block"></td>
+        <td class="hidden sm:block">
+          <px-button @click="showDetails(a.id)" class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-2 border border-green-500 hover:border-transparent rounded">
+            <span>Detail</span>
+          </px-button>
+        </td>
       </tr>
     </tbody>
   </table>
 </template>
 
 <script>
+import PxButton from './PxButton';
+
 export default {
   name: "PxAssetsTable",
+  components: {
+    PxButton
+  },
   props: {
     assets: {
       type: Array,
@@ -52,17 +61,23 @@ export default {
     }
   },
   methods: {
-    changePercentColor(a){
+    changePercentColor(a) {
       return {
         'text-green-500' : a.changePercent24Hr > 0,
         'text-red-500' : a.changePercent24Hr < 0
       }
+    },
+    showDetails(id) {
+      this.$router.push({ name: 'coin-detail', params: { id }}) 
     }  
   }
 };
 </script>
 
 <style scoped>
+table {
+  width: 100%;
+}
 .up::before {
   content: "👆";
 }

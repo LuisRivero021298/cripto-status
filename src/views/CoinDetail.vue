@@ -5,8 +5,7 @@
         <div class="flex flex-col items-center">
           <img
             :src="
-              `https://static.coincap.io/assets/icons/${asset.symbol.toLowerCase()}@2x.png`
-            "
+              `https://static.coincap.io/assets/icons/${asset.symbol.toLowerCase()}@2x.png` "
             :alt="asset.name"
             class="w-20 h-20 mr-5"
           />
@@ -65,39 +64,58 @@
           <span class="text-xl"></span>
         </div>
       </div>
+
+      <div class="my-5" style="height: 80vh; width: 100%">
+        <line-chart v-if="history.length > 0" :chartdata="chartdata" :options="chartOptions" label="Example" ></line-chart>
+      </div>
     </template>
   </div>
 </template>
 
 <script>
 import api from "@/api";
+import LineChart from "@/components/LineChart";
 
 export default {
   name: "CoinDetail",
+  components: {
+    LineChart
+  },
   data() {
     return {
       asset: {},
-      history: []
+      history: [],
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+      }
     };
   },
   computed: {
+    chartdata() {
+      const data = [];
+      this.history.map((h) => {
+        data.push({date: h.date,priceUsd: parseFloat(h.priceUsd).toFixed(2)});
+      });
+      return data;
+    },
     min() {
       return Math.min(
-        ...this.history.map(h => parseFloat(h.priceUsd).toFixed(2)) 
-      ); 
+        ...this.history.map((h) => parseFloat(h.priceUsd).toFixed(2))
+      );
     },
     max() {
       return Math.max(
-        ...this.history.map(h => parseFloat(h.priceUsd).toFixed(2)) 
+        ...this.history.map((h) => parseFloat(h.priceUsd).toFixed(2))
       );
     },
     avg() {
       let subTotal = 0;
 
-      for(let i = 0; i < this.history.length; i++){
+      for (let i = 0; i < this.history.length; i++) {
         subTotal += parseFloat(this.history[i].priceUsd);
       }
-      return (subTotal / this.history.length); 
+      return subTotal / this.history.length;
     },
   },
   async created() {
@@ -107,15 +125,22 @@ export default {
   },
   methods: {
     async getCoin(id) {
-      const { data } = await api.getAsset(id);
-      this.asset = data;
+      try {
+        const { data } = await api.getAsset(id);
+        this.asset = data;
+      } catch (err) {
+        console.error(err);
+      }
     },
-    async getAssetHistory(id){
-      const { data } = await api.assetHistory(id); 
-      this.history = data;
-    }
-
-  }
+    async getAssetHistory(id) {
+      try {
+        const { data } = await api.assetHistory(id);
+        this.history = data;
+      } catch (err) {
+        console.error(err);
+      }
+    },
+  },
 };
 </script>
 
