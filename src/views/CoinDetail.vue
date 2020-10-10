@@ -5,7 +5,8 @@
         <div class="flex flex-col items-center">
           <img
             :src="
-              `https://static.coincap.io/assets/icons/${asset.symbol.toLowerCase()}@2x.png` "
+              `https://static.coincap.io/assets/icons/${asset.symbol.toLowerCase()}@2x.png`
+            "
             :alt="asset.name"
             class="w-20 h-20 mr-5"
           />
@@ -66,7 +67,40 @@
       </div>
 
       <div class="my-5" style="height: 80vh; width: 100%">
-        <line-chart v-if="history.length > 0" :chartdata="chartdata" :options="chartOptions" label="Example" ></line-chart>
+        <line-chart
+          v-if="history.length > 0"
+          :chartdata="chartdata"
+          :options="chartOptions"
+          label="Example"
+        ></line-chart>
+      </div>
+
+      <div>
+        <h3 class="text-xl">Best offert change</h3>
+        <table>
+          <tr v-for="m in markets" class="border-b" :key="`${m.exchangeId}-${m.priceUsd}`">
+            <td>
+              <b>{{ m.exchangeId }}</b>
+            </td>
+            <td>{{ $filters.dollarFilter(m.priceUsd) }}</td>
+            <td>{{ m.baseSymbol }}/ {{ m.quoteSymbol  }}</td>
+            <td>
+              <px-button
+                v-show="!m.url" 
+                class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-2 border border-green-500 hover:border-transparent rounded" 
+                @click="getUrl(m)"
+              >
+                <span>Hello</span>
+              </px-button>
+              <a 
+                v-show="m.url" 
+                class="hover:underline text-green-600" 
+                target="_blanck"
+                :href="m.url"  
+              >{{m.url}}</a>
+            </td>
+          </tr>
+        </table>
       </div>
     </template>
   </div>
@@ -75,27 +109,33 @@
 <script>
 import api from "@/api";
 import LineChart from "@/components/LineChart";
+import PxButton from "@/components/PxButton";
 
 export default {
   name: "CoinDetail",
   components: {
-    LineChart
+    LineChart,
+    PxButton
   },
   data() {
     return {
       asset: {},
       history: [],
+      markets: [],
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
-      }
+      },
     };
   },
   computed: {
     chartdata() {
       const data = [];
       this.history.map((h) => {
-        data.push({date: h.date,priceUsd: parseFloat(h.priceUsd).toFixed(2)});
+        data.push({
+          date: h.date,
+          priceUsd: parseFloat(h.priceUsd).toFixed(2),
+        });
       });
       return data;
     },
@@ -122,6 +162,7 @@ export default {
     const id = this.$route.params.id;
     this.getCoin(id);
     this.getAssetHistory(id);
+    this.getListExchange(id);
   },
   methods: {
     async getCoin(id) {
@@ -140,6 +181,20 @@ export default {
         console.error(err);
       }
     },
+    async getListExchange(id) {
+      try {
+        const { data } = await api.getMarkets(id);
+        this.markets = data; 
+        console.log(this.markets);
+      } catch (err){ console.error(err);}
+    },
+    async getUrl(exchange) {
+      try {
+        const {data} = await api.getExchange(exchange.exchangeId);
+        exchange.url = data.exchangeUrl;
+        return exchange;
+      } catch (err){ console.error(err)}
+    }
   },
 };
 </script>
