@@ -3,8 +3,8 @@
     <thead>
       <tr class="bg-gray-100 border-b-2 border-gray-400">
         <th></th>
-        <th>
-          <span>Ranking</span>
+        <th :class="{ up: sortOrder === 1, down: sortOrder === -1}">
+          <span @click="changeOrder" class="underline cursor-pointer">Ranking</span>
         </th>
         <th>Nombre</th>
         <th class="hidden md:table-cell">Precio</th>
@@ -61,7 +61,8 @@ export default {
   name: "PxAssetsTable",
   data(){
     return {
-      filter: ''
+      filter: '',
+      sortOrder: 1
     }
   },
   components: {
@@ -74,14 +75,18 @@ export default {
     }
   },
   computed: {
-    arrFilters() {
-      if (!this.filter) {
-        return this.assets;
-      } 
+    arrFilters() { 
+      const altOrder = this.sortOrder === 1 ? -1 : 1;
+
       return this.assets.filter( a => 
           a.name.toLowerCase().includes(this.filter.toLowerCase()) || 
           a.symbol.toLowerCase().includes(this.filter.toLowerCase())
-      )
+      ).sort((a, b) => {
+        if (parseInt(a.rank) > parseInt(b.rank)) {
+          return this.sortOrder
+        }  
+        return altOrder
+      });
     }        
   },
   methods: {
@@ -93,6 +98,10 @@ export default {
     },
     showDetails(id) {
       this.$router.push({ name: 'coin-detail', params: { id }}) 
+    },
+    changeOrder() {
+      this.sortOrder = (this.sortOrder === 1) ? -1 :  1;
+      console.log(this.sortOrder);
     }  
   }
 };
