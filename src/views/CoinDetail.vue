@@ -1,5 +1,6 @@
 <template>
   <div class="flex-col">
+    <px-bounce-loader v-if="isLoading" />
     <template v-if="asset.id">
       <div class="flex flex-col sm:flex-row justify-around items-center">
         <div class="flex flex-col items-center">
@@ -66,7 +67,7 @@
         </div>
       </div>
 
-      <div class="my-5" style="height: 80vh; width: 100%">
+      <div class="my-5" style="width: 100%">
         <line-chart
           v-if="history.length > 0"
           :chartdata="chartdata"
@@ -77,7 +78,7 @@
 
       <div>
         <h3 class="text-xl">Best offert change</h3>
-        <table>
+        <table style="width: 90%; margin: 0 auto">
           <tr v-for="m in markets" class="border-b" :key="`${m.exchangeId}-${m.priceUsd}`">
             <td>
               <b>{{ m.exchangeId }}</b>
@@ -90,7 +91,7 @@
                 class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-2 border border-green-500 hover:border-transparent rounded" 
                 @click="getUrl(m)"
               >
-                <span>Hello</span>
+                <span>Get Link</span>
               </px-button>
               <a 
                 v-show="m.url" 
@@ -110,15 +111,18 @@
 import api from "@/api";
 import LineChart from "@/components/LineChart";
 import PxButton from "@/components/PxButton";
+import PxBounceLoader from "@/components/PxBounceLoader";
 
 export default {
   name: "CoinDetail",
   components: {
     LineChart,
-    PxButton
+    PxButton,
+    PxBounceLoader
   },
   data() {
     return {
+      isLoading: false,
       asset: {},
       history: [],
       markets: [],
@@ -159,6 +163,7 @@ export default {
     },
   },
   async created() {
+    this.isLoading = true;
     const id = this.$route.params.id;
     this.getCoin(id);
     this.getAssetHistory(id);
@@ -169,6 +174,7 @@ export default {
       try {
         const { data } = await api.getAsset(id);
         this.asset = data;
+        this.isLoading = false;
       } catch (err) {
         console.error(err);
       }
@@ -185,7 +191,6 @@ export default {
       try {
         const { data } = await api.getMarkets(id);
         this.markets = data; 
-        console.log(this.markets);
       } catch (err){ console.error(err);}
     },
     async getUrl(exchange) {

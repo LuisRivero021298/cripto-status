@@ -10,12 +10,20 @@
         <th class="hidden md:table-cell">Precio</th>
         <th class="hidden lg:table-cell">Cap. de Mercado</th>
         <th>Variación 24hs</th>
-        <td class="hidden sm:block"></td>
+        <td class="hidden sm:block">
+          <input
+            class="bg-gray-100 focus:outline-none border-b border-gray-400 py-2 px-4 block w-full appearance-none leading-normal"
+            id="filter"
+            placeholder="Buscar..."
+            type="text"
+            v-model="filter"
+          />
+        </td>
       </tr>
     </thead>
     <tbody>
       <tr 
-      v-for="a in assets" 
+      v-for="a in arrFilters" 
       :key="a.id" 
       class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100">
         <td>
@@ -51,6 +59,11 @@ import PxButton from './PxButton';
 
 export default {
   name: "PxAssetsTable",
+  data(){
+    return {
+      filter: ''
+    }
+  },
   components: {
     PxButton
   },
@@ -59,6 +72,17 @@ export default {
       type: Array,
       default: () => []
     }
+  },
+  computed: {
+    arrFilters() {
+      if (!this.filter) {
+        return this.assets;
+      } 
+      return this.assets.filter( a => 
+          a.name.toLowerCase().includes(this.filter.toLowerCase()) || 
+          a.symbol.toLowerCase().includes(this.filter.toLowerCase())
+      )
+    }        
   },
   methods: {
     changePercentColor(a) {
