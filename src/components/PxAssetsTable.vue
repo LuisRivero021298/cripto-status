@@ -45,7 +45,7 @@
           {{ $filters.percentFilter(a.changePercent24Hr) }}
         </td>
         <td class="hidden sm:block">
-          <px-button @click="showDetails(a.id)" class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-2 border border-green-500 hover:border-transparent rounded">
+          <px-button @click="showDetails(a.id)">
             <span>Detail</span>
           </px-button>
         </td>
@@ -92,7 +92,7 @@ export default {
   methods: {
     changePercentColor(a) {
       return {
-        'text-green-500' : a.changePercent24Hr > 0,
+        'text-teal-500' : a.changePercent24Hr > 0,
         'text-red-500' : a.changePercent24Hr < 0
       }
     },
