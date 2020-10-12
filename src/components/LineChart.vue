@@ -46,7 +46,7 @@ export default {
             label: "Prices USD",
             data: pricesList,
             borderColor: [
-              "#4ece83",
+              "#A2E9FF",
             ],
             borderWidth: 5,
           },
@@ -68,8 +68,8 @@ export default {
           point: {
             radius: 1,
             borderWidth: 1,
-            borderColor: '#1a954d',
-            backgroundColor: '#1a954d',
+            borderColor: '#60bad6',
+            backgroundColor: '#60bad6',
             hoverRadius: 5,
             hoverBorderWidth: 2
           },

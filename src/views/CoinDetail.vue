@@ -48,7 +48,7 @@
 
         <div class="my-10 sm:mt-0 flex flex-col justify-center text-center">
           <button
-            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            class="bg-teal-600 hover:bg-teal-500 text-white font-bold py-2 px-4 rounded"
           >
             Cambiar
           </button>
@@ -82,7 +82,7 @@
         <table style="width: 90%; margin: 0 auto">
           <tr
             v-for="m in markets"
-            class="border-b"
+            class="border-b box-border"
             :key="`${m.exchangeId}-${m.priceUsd}`"
           >
             <td>
@@ -93,14 +93,14 @@
             <td>
               <px-button
                 v-show="!m.url"
-                class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-2 border border-green-500 hover:border-transparent rounded"
+                class="bg-transparent hover:bg-teal-500 text-teal-700 font-semibold hover:text-white py-2 px-2 border border-teal-500 hover:border-transparent rounded"
                 @click="getUrl(m)"
               >
                 <span>Get Link</span>
               </px-button>
               <a
                 v-show="m.url"
-                class="hover:underline text-green-600"
+                class="hover:underline text-teal-600"
                 target="_blanck"
                 :href="m.url"
                 >{{ m.url }}</a
