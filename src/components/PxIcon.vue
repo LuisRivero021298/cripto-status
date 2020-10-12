@@ -456,5 +456,7 @@ MDA6MDU6MTYrMDM6MDAprfd5AAAAAElFTkSuQmCC"
 </template>
 
 <script>
-  export default {}
+  export default {
+    name: 'PxIcon'
+  }
 </script>
